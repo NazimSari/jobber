@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
-import { FibonacciJob } from './fibonacci';
+import { FibonacciJob } from './jobs/fibonacci/fibonacci.job';
 import { DiscoveryModule } from '@golevelup/nestjs-discovery';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_PACKAGE_NAME } from 'types/proto/auth';
 import { JobsService } from './jobs.service';
 import { JobsResolver } from './jobs.resolver';
 import { join } from 'path';
+import { PulsarModule } from '@jobber/pulsar';
 
 @Module({
   imports: [
     DiscoveryModule,
+    PulsarModule,
     ClientsModule.register([
       {
         name: AUTH_PACKAGE_NAME,
