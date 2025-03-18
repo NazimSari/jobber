@@ -5,7 +5,7 @@ import { Logger } from '@nestjs/common';
 
 export abstract class PulsarConsumer<T> {
   private consumer!: Consumer;
-  private readonly logger = new Logger(this.topic);
+  protected readonly logger = new Logger(this.topic);
 
   constructor(
     private readonly pulsarClient: PulsarClient,
@@ -27,12 +27,8 @@ export abstract class PulsarConsumer<T> {
     } catch (err) {
       this.logger.error(err);
     } finally {
-      await this.ackknowledge(message);
+      await this.consumer.acknowledge(message);
     }
-  }
-
-  protected async ackknowledge(message: Message) {
-    await this.consumer.acknowledge(message);
   }
 
   protected abstract onMessage(data: T): Promise<void>;
