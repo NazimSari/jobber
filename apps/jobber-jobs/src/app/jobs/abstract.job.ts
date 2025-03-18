@@ -15,6 +15,16 @@ export abstract class AbstractJob<T extends object> {
     if (!this.producer) {
       this.producer = await this.pulsarClient.createProducer(job);
     }
+    if (Array.isArray(data)) {
+      for (const message of data) {
+        await this.send(message);
+      }
+      return;
+    }
+    await this.send(data);
+  }
+
+  private async send(data: T) {
     await this.producer.send({ data: serialize(data) });
   }
 
