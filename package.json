@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "start": "nx run-many -t serve -p jobber-auth jobber-jobs jobber-executor",
+    "start": "nx run-many -t serve -p auth jobs jobber-executor",
     "generate-ts-proto": "node scripts/proto-gen.js"
   },
   "nx": {
@@ -17,6 +17,10 @@
       }
     }
   },
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
   "private": true,
   "dependencies": {
     "@apollo/server": "^4.11.3",
