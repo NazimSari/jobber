@@ -4,18 +4,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "start": "nx run-many -t serve -p auth jobs jobber-executor",
-    "generate-ts-proto": "node scripts/proto-gen.js"
-  },
-  "nx": {
-    "targets": {
-      "generate-ts-proto": {
-        "inputs": [
-          "{workspaceRoot}/proto/*.proto"
-        ],
-        "cache": true
-      }
-    }
+    "start": "nx run-many -t serve -p auth jobs jobber-executor"
   },
   "workspaces": [
     "apps/*",
@@ -34,7 +23,6 @@
     "@nestjs/graphql": "^13.0.3",
     "@nestjs/microservices": "^11.0.11",
     "@nestjs/platform-express": "^11.0.10",
-    "@prisma/client": "^6.4.1",
     "axios": "^1.6.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -58,7 +46,7 @@
     "@nx/nest": "20.4.6",
     "@nx/node": "20.4.6",
     "@nx/web": "20.4.6",
-    "@nx/webpack": "20.4.6",
+    "@nx/webpack": "^20.4.6",
     "@nx/workspace": "20.4.6",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
@@ -74,12 +62,12 @@
     "lint-staged": "^15.4.3",
     "nx": "20.4.6",
     "prettier": "^2.6.2",
-    "prisma": "^6.4.1",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.19.0",
+    "webpack": "^5.98.0",
     "webpack-cli": "^5.1.4"
   }
 }

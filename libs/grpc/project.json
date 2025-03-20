@@ -1,9 +1,38 @@
 {
   "name": "grpc",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "grpc/src",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/grpc/src",
   "projectType": "library",
   "tags": [],
   "// targets": "to see all targets run: nx show project grpc --web",
-  "targets": {}
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{projectRoot}/dist"],
+      "dependsOn": ["generate-ts-proto"],
+      "options": {
+        "webpackConfig": "{projectRoot}/webpack.config.js",
+        "outputPath": "{projectRoot}/dist",
+        "main": "{projectRoot}/src/index.ts",
+        "tsConfig": "{projectRoot}/tsconfig.lib.json",
+        "target": "node",
+        "compiler": "tsc"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      }
+    },
+    "generate-ts-proto": {
+      "options": {
+        "command": "node src/lib/scripts/proto-gen.js",
+        "cwd": "{projectRoot}"
+      },
+      "input": ["{workspaceRoot}/proto/*.proto"],
+      "cache": true
+    }
+  }
 }
