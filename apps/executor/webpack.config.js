@@ -3,8 +3,9 @@ const { join } = require('path');
 
 module.exports = {
   output: {
-    path: join(__dirname, '../../dist/apps/jobber-executor'),
+    path: join(__dirname, '../../dist/apps/executor'),
   },
+  devtool: false, // Source map üretimini kapatır (main.js.map oluşmaz)
   plugins: [
     new NxAppWebpackPlugin({
       target: 'node',
@@ -14,7 +15,6 @@ module.exports = {
       assets: ['./src/assets'],
       optimization: false,
       outputHashing: 'none',
-      generatePackageJson: true,
     }),
   ],
 };

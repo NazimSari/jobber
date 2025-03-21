@@ -5,6 +5,7 @@ module.exports = {
   output: {
     path: join(__dirname, '../../dist/apps/auth'),
   },
+  devtool: false, // Source map üretimini kapatır (main.js.map oluşmaz)
   plugins: [
     new NxAppWebpackPlugin({
       target: 'node',
@@ -14,7 +15,6 @@ module.exports = {
       assets: ['./src/assets'],
       optimization: false,
       outputHashing: 'none',
-      generatePackageJson: true,
     }),
   ],
 };
