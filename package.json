@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky",
-    "start": "nx run-many -t serve -p auth jobs jobber-executor"
+    "start": "nx run-many -t serve -p auth jobs executor"
   },
   "workspaces": [
     "apps/*",
