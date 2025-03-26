@@ -52,7 +52,7 @@ jobs:
         run: |
           aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 806206016987.dkr.ecr.eu-north-1.amazonaws.com
 
-      - name: Build and pushh all images to ECR
+      - name: Build and push all images to ECR
         run: |
           IMAGES=(
           "jobs apps/jobs/Dokerfile"
