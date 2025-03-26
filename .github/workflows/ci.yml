@@ -55,7 +55,7 @@ jobs:
       - name: Build and push all images to ECR
         run: |
           IMAGES=(
-          "jobs apps/jobs/Dokerfile"
+          "jobs apps/jobs/Dockerfile"
           "executor apps/executor/Dockerfile"
           "auth apps/auth/Dockerfile"
           )
