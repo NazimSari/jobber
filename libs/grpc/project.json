@@ -8,15 +8,16 @@
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
-      "outputs": ["{projectRoot}/dist"],
+      "outputs": ["{workspaceRoot}/dist/libs/grpc"],
       "dependsOn": ["generate-ts-proto"],
       "options": {
         "webpackConfig": "{projectRoot}/webpack.config.js",
-        "outputPath": "{projectRoot}/dist",
+        "outputPath": "{workspaceRoot}/dist/libs/grpc",
         "main": "{projectRoot}/src/index.ts",
         "tsConfig": "{projectRoot}/tsconfig.lib.json",
         "target": "node",
-        "compiler": "tsc"
+        "compiler": "tsc",
+        "assets": ["{projectRoot}/src/lib/proto"]
       },
       "configurations": {
         "production": {
