@@ -55,21 +55,35 @@ jobs:
       - name: Build and push all images to ECR
         run: |
           IMAGES=(
-          "jobs apps/jobs/Dockerfile"
-          "executor apps/executor/Dockerfile"
-          "auth apps/auth/Dockerfile"
+           "jobs apps/jobs/Dockerfile"
+           "executor apps/executor/Dockerfile"
+           "auth apps/auth/Dockerfile"
           )
 
           for image in "${IMAGES[@]}"; do 
-            NAME=$(echo $image | cut -d' ' -f1) 
-            DOCKERFILE=$(echo $image | cut -d' ' -f2)
+            
+            read -r NAME DOCKERFILE <<< "$image"
 
-            {
-              docker build \ 
-                --tag 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest \
-                -f $DOCKERFILE \
-                . && docker push 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest
-            } & 
-          done 
+
+            CONTEXT=$(dirname "$DOCKERFILE")
+
+            echo "Building $NAME with Dockerfile: $DOCKERFILE and context: $CONTEXT"
+
+           {
+            docker build \
+            --tag 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest \
+            -f "$DOCKERFILE" \
+            "$CONTEXT" && \
+            docker push 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest
+           } & 
+          done
 
           wait
+        shell: /usr/bin/bash -e {0}
+        env:
+          NX_BASE: faffe5aa73fd96881111147e403a49666e10f75d
+          NX_HEAD: d26f9cb2af2941250289c0359a826156686298df
+          AWS_DEFAULT_REGION: eu-north-1
+          AWS_REGION: eu-north-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
