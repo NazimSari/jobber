@@ -55,30 +55,27 @@ jobs:
       - name: Build and push all images to ECR
         run: |
           IMAGES=(
-           "jobs apps/jobs/Dockerfile"
-           "executor apps/executor/Dockerfile"
-           "auth apps/auth/Dockerfile"
-          )
+             "jobs apps/jobs/Dockerfile"
+             "executor apps/executor/Dockerfile"
+             "auth apps/auth/Dockerfile"
+           )
 
-          for image in "${IMAGES[@]}"; do 
-            
-            read -r NAME DOCKERFILE <<< "$image"
+           for image in "${IMAGES[@]}"; do 
+             read -r NAME DOCKERFILE <<< "$image"
 
+             echo "Building $NAME with Dockerfile: $DOCKERFILE and context: ."
 
-            CONTEXT=$(dirname "$DOCKERFILE")
+             {
+               docker build \
+                 --tag 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest \
+                 -f "$DOCKERFILE" \
+                 . && \
+               docker push 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest
+             } & 
+           done
 
-            echo "Building $NAME with Dockerfile: $DOCKERFILE and context: $CONTEXT"
+           wait
 
-           {
-            docker build \
-            --tag 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest \
-            -f "$DOCKERFILE" \
-            "$CONTEXT" && \
-            docker push 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest
-           } & 
-          done
-
-          wait
         shell: /usr/bin/bash -e {0}
         env:
           NX_BASE: faffe5aa73fd96881111147e403a49666e10f75d
