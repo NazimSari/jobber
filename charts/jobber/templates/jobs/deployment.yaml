@@ -26,5 +26,5 @@ spec:
             - name: AUTH_GRPC_SERVICE_URL
               value: "auth-grpc:{{ .Values.auth.port.grpc }}"
             - name: PORT
-              value: "{{ .Values.jobs.port }}:"  
+              value: "{{ .Values.jobs.port }}"  
 {{- end }}
