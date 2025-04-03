@@ -11,11 +11,17 @@ const protocGenTsProto = isWindows
   ? path.resolve(workspaceRoot, 'node_modules/.bin/protoc-gen-ts_proto.cmd')
   : path.resolve(workspaceRoot, 'node_modules/.bin/protoc-gen_ts_proto');
 
+// .proto dosyalarının bulunduğu dizin
+const protoPath = path.join(workspaceRoot, 'libs/grpc/src/lib/proto');
+
 // Protoc komutunu çalıştır
 const command = `npx protoc --plugin=protoc-gen-ts_proto="${protocGenTsProto}" --ts_proto_out=${path.join(
   workspaceRoot,
-  'libs/grpc/src/lib'
-)} ${path.join(workspaceRoot, 'proto/*.proto')} --ts_proto_opt=nestJs=true`;
+  'libs/grpc/src/lib/types/proto'
+)} --proto_path="${protoPath}" ${path.join(
+  protoPath,
+  '*.proto'
+)} --ts_proto_opt=nestJs=true`;
 
 console.log(`Running: ${command}`);
 execSync(command, { stdio: 'inherit', shell: true });
