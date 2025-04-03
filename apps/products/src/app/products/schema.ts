@@ -4,7 +4,7 @@ export const products = pgTable('products', {
   id: serial('id').primaryKey(),
   name: text('name'),
   category: text('category'),
-  price: text('price'),
+  price: real('price'),
   stock: integer('stock'),
   rating: real('rating'),
   description: text('description'),
