@@ -21,7 +21,7 @@ const command = `npx protoc --plugin=protoc-gen-ts_proto="${protocGenTsProto}" -
 )} --proto_path="${protoPath}" ${path.join(
   protoPath,
   '*.proto'
-)} --ts_proto_opt=nestJs=true`;
+)} --ts_proto_opt=nestJs=true,outputServices=grpc-js --ts_proto_opt=exportCommonSymbols=false`;
 
 console.log(`Running: ${command}`);
 execSync(command, { stdio: 'inherit', shell: true });

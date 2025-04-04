@@ -5,10 +5,13 @@
 // source: products.proto
 
 /* eslint-disable */
+import { BinaryReader, BinaryWriter } from '@bufbuild/protobuf/wire';
+import {
+  type handleUnaryCall,
+  type UntypedServiceImplementation,
+} from '@grpc/grpc-js';
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-
-export const protobufPackage = 'products';
 
 export interface CreateProductRequest {
   name: string;
@@ -21,7 +24,144 @@ export interface CreateProductRequest {
 
 export interface CreateProductResponse {}
 
-export const PRODUCTS_PACKAGE_NAME = 'products';
+function createBaseCreateProductRequest(): CreateProductRequest {
+  return {
+    name: '',
+    category: '',
+    price: 0,
+    stock: 0,
+    rating: 0,
+    description: '',
+  };
+}
+
+export const CreateProductRequest: MessageFns<CreateProductRequest> = {
+  encode(
+    message: CreateProductRequest,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.name !== '') {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.category !== '') {
+      writer.uint32(18).string(message.category);
+    }
+    if (message.price !== 0) {
+      writer.uint32(29).float(message.price);
+    }
+    if (message.stock !== 0) {
+      writer.uint32(32).int32(message.stock);
+    }
+    if (message.rating !== 0) {
+      writer.uint32(45).float(message.rating);
+    }
+    if (message.description !== '') {
+      writer.uint32(50).string(message.description);
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number
+  ): CreateProductRequest {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateProductRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.category = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 29) {
+            break;
+          }
+
+          message.price = reader.float();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.stock = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 45) {
+            break;
+          }
+
+          message.rating = reader.float();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreateProductResponse(): CreateProductResponse {
+  return {};
+}
+
+export const CreateProductResponse: MessageFns<CreateProductResponse> = {
+  encode(
+    _: CreateProductResponse,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number
+  ): CreateProductResponse {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateProductResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 export interface ProductsServiceClient {
   createProduct(
@@ -68,3 +208,27 @@ export function ProductsServiceControllerMethods() {
 }
 
 export const PRODUCTS_SERVICE_NAME = 'ProductsService';
+
+export type ProductsServiceService = typeof ProductsServiceService;
+export const ProductsServiceService = {
+  createProduct: {
+    path: '/products.ProductsService/CreateProduct',
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: CreateProductRequest) =>
+      Buffer.from(CreateProductRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer) => CreateProductRequest.decode(value),
+    responseSerialize: (value: CreateProductResponse) =>
+      Buffer.from(CreateProductResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer) => CreateProductResponse.decode(value),
+  },
+} as const;
+
+export interface ProductsServiceServer extends UntypedServiceImplementation {
+  createProduct: handleUnaryCall<CreateProductRequest, CreateProductResponse>;
+}
+
+interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
+}
