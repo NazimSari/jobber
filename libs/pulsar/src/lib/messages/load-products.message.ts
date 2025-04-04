@@ -14,7 +14,7 @@ export class LoadProductsMessage {
 
   @IsString()
   @IsNotEmpty()
-  categrory: string;
+  category: string;
 
   @IsNumber()
   @Min(0)
