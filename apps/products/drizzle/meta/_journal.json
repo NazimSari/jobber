@@ -8,6 +8,20 @@
       "when": 1744022629713,
       "tag": "0000_worthless_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1744025439741,
+      "tag": "0001_shocking_the_initiative",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1744025798547,
+      "tag": "0002_seed-categories",
+      "breakpoints": true
     }
   ]
 }
