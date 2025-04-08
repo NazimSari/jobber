@@ -41,70 +41,47 @@ jobs:
       # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
       - run: npx nx affected -t lint test build
 
-      - name: Build images (without pushing to ECR)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Log in to Amazon ECR
+        run: |
+          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 806206016987.dkr.ecr.eu-north-1.amazonaws.com
+
+      - name: Build and push all images to ECR
         run: |
           IMAGES=(
-             "jobs apps/jobs/Dockerfile"
-             "executor apps/executor/Dockerfile"
-             "auth apps/auth/Dockerfile"
-             "products apps/products/Dockerfile"
-           )
-           for image in "${IMAGES[@]}"; do 
-             read -r NAME DOCKERFILE <<< "$image"
-             echo "Building $NAME with Dockerfile: $DOCKERFILE and context: ."
-             {
-               docker build \
-                 --tag 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest \
-                 -f "$DOCKERFILE" \
-                 .
-             } & 
-           done
-           wait
+           "jobs apps/jobs/Dockerfile"
+           "executor apps/executor/Dockerfile"
+           "auth apps/auth/Dockerfile"
+           "products apps/products/Dockerfile"
+          )
+
+          for image in "${IMAGES[@]}"; do
+           read -r NAME DOCKERFILE <<< "$image"
+
+           echo "Building $NAME with Dockerfile: $DOCKERFILE and context: ."
+
+           {
+             docker build \
+               --tag 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest \
+               -f "$DOCKERFILE" \
+               . && \
+             docker push 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest
+           } &
+          done
+
+          wait
+
         shell: /usr/bin/bash -e {0}
         env:
           NX_BASE: faffe5aa73fd96881111147e403a49666e10f75d
           NX_HEAD: d26f9cb2af2941250289c0359a826156686298df
-
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v3
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: eu-north-1
-
-      # - name: Log in to Amazon ECR
-      #   run: |
-      #     aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 806206016987.dkr.ecr.eu-north-1.amazonaws.com
-
-      # - name: Build and push all images to ECR
-      # run: |
-      #   IMAGES=(
-      #      "jobs apps/jobs/Dockerfile"
-      #      "executor apps/executor/Dockerfile"
-      #      "auth apps/auth/Dockerfile"
-      #    )
-
-      #    for image in "${IMAGES[@]}"; do
-      #      read -r NAME DOCKERFILE <<< "$image"
-
-      #      echo "Building $NAME with Dockerfile: $DOCKERFILE and context: ."
-
-      #      {
-      #        docker build \
-      #          --tag 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest \
-      #          -f "$DOCKERFILE" \
-      #          . && \
-      #        docker push 806206016987.dkr.ecr.eu-north-1.amazonaws.com/jobber/$NAME:latest
-      #      } &
-      #    done
-
-      #    wait
-
-      # shell: /usr/bin/bash -e {0}
-      # env:
-      #   NX_BASE: faffe5aa73fd96881111147e403a49666e10f75d
-      #   NX_HEAD: d26f9cb2af2941250289c0359a826156686298df
-      #   AWS_DEFAULT_REGION: eu-north-1
-      #   AWS_REGION: eu-north-1
-      #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-north-1
+          AWS_REGION: eu-north-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
