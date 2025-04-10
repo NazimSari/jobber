@@ -10,6 +10,7 @@ import { PulsarModule } from '@jobber/pulsar';
 import { ConfigService } from '@nestjs/config';
 import { LoadProductsJob } from './jobs/products/load-products.job';
 import { PrismaModule } from './prisma/prisma.module';
+import { JobsController } from './jobs.controller';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { PrismaModule } from './prisma/prisma.module';
       },
     ]),
   ],
+  controllers: [JobsController],
   providers: [FibonacciJob, JobsService, JobsResolver, LoadProductsJob],
 })
 export class JobsModule {}
