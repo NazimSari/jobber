@@ -39,5 +39,6 @@ RUN npm ci
 
 COPY --from=builder /workspace/dist ./dist
 COPY --from=builder /workspace/libs/grpc/src/lib/proto/products.proto /app/libs/grpc/src/lib/proto/
+COPY --from=builder /workspace/libs/grpc/src/lib/proto/jobs.proto /app/libs/grpc/src/lib/proto/
 
 CMD ["node", "dist/apps/executor/main"]
