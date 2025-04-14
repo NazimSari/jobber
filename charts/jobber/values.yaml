@@ -1,9 +1,17 @@
 global:
   imagePullPolicy: Always
 
+ingress:
+  alb: false
+
+persistence:
+  ebs: false
+
 pulsar: 
   namespace: pulsar
   namespaceCreate: true
+  components:
+    proxy: false 
   zookeeper:
     replicaCount: 1
     podMonitor:
@@ -20,7 +28,6 @@ pulsar:
     podMonitor:
       enabled: false
   proxy: 
-    replicaCount: 1
     podMonitor:
       enabled: false
   kube-prometheus-stack:
